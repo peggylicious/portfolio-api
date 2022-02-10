@@ -96,9 +96,11 @@ router.post("/login", (req, res, next) => {
         { email: req.body.email, tid: foundUser._id },
         "shhhhh"
       );
-      console.log(token);
-      localStorage.setItem("token", token)
-      res.status(200).json({ message: "Auth successful", token: token, loggedUserId: foundUser._id });
+      console.log("Token ", token);
+      // localStorage.setItem("token", token)
+      // res.redirect('/')
+
+      return res.status(200).json({ message: "Auth successful", token: token, loggedUserId: foundUser._id });
     })
     .catch((err) => {
       res.status(500).json({ err });
