@@ -11,11 +11,12 @@ const myValidator = require("../middleware/validator");
 const router = express.Router();
 
 router.post(
-  "/signup", // username must be an email
-  //   body("name").isEmail(),
-  //   // password must be at least 5 chars long
-  //   body("password").isLength({ min: 5 }),
-  //   .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
+  "/signup", 
+    body("email").isEmail(),
+    // password must be at least 5 chars long
+    body("password").isLength({ min: 5 }),
+    body("confirmPassword").isLength({ min: 5 }),
+    // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
