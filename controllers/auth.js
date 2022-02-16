@@ -29,7 +29,6 @@ module.exports.login = (req, res, next) => {
       .then((passwordIsCorrect) => {
         console.log("Password is", passwordIsCorrect)
         if (!passwordIsCorrect) {
-          // console.log("My", result)
           return res.status(401).json({
             message: "Auth failed 1",
           });
@@ -39,12 +38,54 @@ module.exports.login = (req, res, next) => {
           "shhhhh"
         );
         console.log("Token ", token);
-        // localStorage.setItem("token", token)
-        // res.redirect('/')
-  
         return res.status(200).json({ message: "Auth successful", token: token, loggedUserId: foundUser._id });
       })
       .catch((err) => {
         res.status(500).json({ err });
       });
+  }
+
+  module.exports.signup = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    console.log(req.body);
+
+    //   AuthUser.findOne
+    AuthUser.findOne({ email: req.body.email }).then((userfound) => {
+      console.log("My user ", userfound);
+      if (req.body.email === undefined) {
+        console.log(req);
+        return res.status(500).json({
+          message:
+            "No data was submitted. Make sure you are using the correct headers / content-type",
+        });
+      }
+      if (userfound !== null) {
+        console.log("Null of ", userfound);
+        return res.status(401).json({ message: "User already exists" });
+      }
+      bcrypt.hash(req.body.password, 10, function (err, hash) {
+        // Frontend should verify that both passwords are same b4 sending to Backend
+        const user = new AuthUser({
+          id: mongoose.Types.ObjectId,
+          name: req.body.name,
+          email: req.body.email,
+          password: hash,
+          confirmPassword: hash,
+        });
+        // Store hash in your password DB.
+        console.log(userfound, "else");
+        return user
+          .save()
+          .then((newUser) => {
+            console.log("newUser ", newUser);
+            res.status(200).json({ message: "User created" });
+          })
+          .catch((err) => {
+            res.status(500).json({ err });
+          });
+      });
+    });
   }
