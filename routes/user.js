@@ -15,8 +15,8 @@ router.post(
   "/signup", 
     body("email").isEmail(),
     // password must be at least 5 chars long
-    body("password").isLength({ min: 5 }),
-    body("confirmPassword").isLength({ min: 5 }),
+    body("password").isLength({ min: 3 }),
+    body("confirmPassword").isLength({ min: 3 }),
     // .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
   authController.signup
 );
